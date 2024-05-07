@@ -1,0 +1,36 @@
+:host {
+  mat-grid-tile {
+    background: lightblue;
+  }
+
+  .days-card {
+    margin: 5px;
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+
+    &:hover {
+      margin: 0;
+      border: 5px solid blue;
+    }
+  }
+
+  .today {
+    margin: 0;
+    border: 5px solid red;
+  }
+
+  .tile:not(.previous-month-day) {
+    cursor: pointer;
+  }
+
+  .previous-month-day {
+    opacity: .5;
+    cursor: default;
+
+    .days-card:hover {
+      margin: 5px;
+      border: none;
+    }
+  }
+}
+

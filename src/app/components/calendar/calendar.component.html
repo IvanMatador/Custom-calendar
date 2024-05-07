@@ -1,1 +1,21 @@
-<p>calendar works!</p>
+<mat-grid-list [cols]="cols" rowHeight="1:1.5">
+  @for(day of showedDays; track day.datestamp) {
+    <mat-grid-tile class="tile" [ngClass]="{ 'previous-month-day': day.isNotThisMonth }" (click)="openThisDay(day)">
+      <mat-card class="days-card" [ngClass]="{ 'today': checkIsToday(day) }">
+        <mat-card-header>
+          <mat-card-title-group>
+            <mat-card-title><h3>{{ day.numberAndMonth }}</h3></mat-card-title>
+            <mat-card-subtitle><h4>{{ day.dayOfWeek }}</h4></mat-card-subtitle>
+          </mat-card-title-group>
+        </mat-card-header>
+        <mat-card-content>
+          @for(action of getDaysActions(day); track action) {
+            {{ action }}
+          }
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  } @empty {
+    Щось пішло не за планом...
+  }
+</mat-grid-list>

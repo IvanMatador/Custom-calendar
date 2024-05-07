@@ -1,15 +1,33 @@
-<button (click)="getDaysCount()">GET</button>
-
 <main class="main">
   <div class="content">
     <div class="toolbar">
-      <mat-toolbar>
-        @if(currentDate$ && currentTime$) {
-          <span>Сьогодні {{ currentDate$ | async }} року, час: <b>{{ currentTime$ | async }}</b></span>
-        } @else {
-          <span>Зачекайте трошки...</span>
-        }
-        <span class="spacer"></span>
+      <mat-toolbar class="main-toolbar">
+        <div class="current-date-container">
+          @if((currentDate$ | async) && (currentTime$ | async)) {
+            <span>Сьогодні {{ currentDate$ | async }} року, час: <b>{{ currentTime$ | async }}</b></span>
+            <!-- <span class="month-switcher">
+              @if(calendarType.value === 'month') {
+                {{ showedMonth }}
+              }
+            </span> -->
+          } @else {
+            <span>Зачекайте трошки...</span>
+          }
+        </div>
+
+        <div class="spacer">
+          @if(calendarType.value === 'month') {
+            <mat-form-field>
+              <mat-label>Місяць</mat-label>
+              <mat-select [formControl]="monthsList" (selectionChange)="setShowedMonth($event.value)">
+                @for(month of months; track month) {
+                  <mat-option [value]="$index">{{ month }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          }
+
+        </div>
         <mat-form-field>
           <mat-label>Тип календаря</mat-label>
           <mat-select [formControl]="calendarType" (selectionChange)="setCalendarType($event.value)">
@@ -21,7 +39,7 @@
     </div>
     <div class="divider"><mat-divider/></div>
     <div class="calendar-container">
-      <h1>This is calendar</h1>
+      <app-calendar [calendarType]="calendarType.value"/>
     </div>
   </div>
 </main>
