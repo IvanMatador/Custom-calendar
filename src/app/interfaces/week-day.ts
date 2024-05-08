@@ -1,4 +1,4 @@
-import { Action } from "./actions";
+import { Action, ActionEvent } from "./actions";
 
 export interface WeekDay {
   datestamp: number;
@@ -7,4 +7,5 @@ export interface WeekDay {
   year: string;
   isNotThisMonth: boolean;
   actions?: string[] | Action[] | undefined;
+  events?: ActionEvent[] | undefined;
 }

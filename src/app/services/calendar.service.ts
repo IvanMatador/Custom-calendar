@@ -27,20 +27,4 @@ export class CalendarService {
     const today = this.momentService.getToday();
     return today.dayOfWeek === day.dayOfWeek && today.numberAndMonth === day.numberAndMonth && today.year === day.year;
   }
-
-  getAllDaysActions() {
-    const allActions = JSON.parse(localStorage.getItem('actions') || '');
-    if(allActions && typeof allActions === 'object') {
-      return allActions;
-    } else {
-      return null;
-    }
-  }
-
-  getDaysActions(day: WeekDay) {
-    const allActions: Actions | null = this.getAllDaysActions();
-    if(allActions) {
-      
-    }
-  }
 }

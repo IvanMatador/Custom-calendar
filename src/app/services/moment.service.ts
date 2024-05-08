@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import moment, { Moment } from 'moment';
 import { Observable, Subject } from 'rxjs';
 import { WeekDay } from '../interfaces/week-day';
+import { ActionEvent } from '../interfaces/actions';
 
 @Injectable({
   providedIn: 'root'
@@ -51,22 +52,24 @@ export class MomentService {
 
     let days = [];
     let currentDay = moment(startOfWeek);
+    const eventsForDay = this.getEventsForDay(currentDay);
     while (currentDay <= endOfWeek) {
-      days.push(this.parseDateToObject(currentDay, false));
+      days.push(this.parseDateToObject(currentDay, false, eventsForDay));
       currentDay.add(1, 'days');
     }
 
     return days;
   }
 
-  parseDateToObject(date: Moment, isNotThisMonth: boolean): WeekDay {
+  parseDateToObject(date: Moment, isNotThisMonth: boolean, eventsForDay: ActionEvent[]): WeekDay {
       const splittedDate = moment(date).format('dddd | DD MMMM | YYYY').split(' | ');
       return {
         dayOfWeek: splittedDate[0],
         numberAndMonth: splittedDate[1],
         year: splittedDate[2],
         datestamp: moment(date).valueOf(),
-        isNotThisMonth: isNotThisMonth
+        isNotThisMonth: isNotThisMonth,
+        events: eventsForDay
       };
   }
 
@@ -96,8 +99,9 @@ export class MomentService {
     });
 
     let currentDay = moment(startOfMonth);
+    const eventsForDay = this.getEventsForDay(currentDay);
     while (currentDay <= endOfMonth) {
-      days.push(this.parseDateToObject(currentDay, false));
+      days.push(this.parseDateToObject(currentDay, false, eventsForDay));
       currentDay.add(1, 'days');
     }
     days.unshift(...previousMonthDays);
@@ -105,6 +109,33 @@ export class MomentService {
 
     return days;
   }
+
+  getAllDaysEvents() {
+
+    if(localStorage.getItem('events')) {
+      const allEvents = JSON.parse(localStorage.getItem('events')!);
+      return allEvents;
+    } else {
+      return null;
+    }
+  }
+
+  getDaysEvents(day: WeekDay) {
+    const allActions: ActionEvent[] | null = this.getAllDaysEvents();
+    if(allActions) {
+
+    }
+  }
+
+  getEventsForDay(date: moment.Moment): ActionEvent[] {
+    const events = this.getAllDaysEvents();
+    if(!events) return [];
+    return events.filter((event: ActionEvent) =>
+        event.start <= date.valueOf() &&
+        event.end >= date.valueOf() &&
+        event.repetition !== 'once'
+    );
+}
 
   updateShowedMonth(): WeekDay[] {
     const showedMonth = moment.months().indexOf(this.getShowedMonth());

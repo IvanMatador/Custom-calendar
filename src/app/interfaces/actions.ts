@@ -16,3 +16,13 @@ export interface Actions {
   annually?: Action[];
   once?: Action[];
 }
+
+export interface ActionEvent {
+  name: string;
+  type: string;
+  start: number;
+  end: number;
+  repetition: 'week' | 'month' | 'day' | 'year' | 'once';
+  isHoliday: boolean;
+}
+
