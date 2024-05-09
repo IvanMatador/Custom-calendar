@@ -1,13 +1,15 @@
-.main-toolbar {
-  min-height: 100px;
-}
+:host {
+  .main-toolbar {
+    min-height: 100px;
+  }
 
-.spacer {
-  display: flex;
-  justify-content: center;
-  flex: 1 1 auto;
-}
+  .spacer {
+    display: flex;
+    justify-content: center;
+    flex: 1 1 auto;
+  }
 
-.month-switcher {
-  padding: 0 20px;
+  .month-switcher {
+    padding: 0 20px;
+  }
 }

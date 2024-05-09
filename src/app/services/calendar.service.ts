@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { WeekDay } from '../interfaces/week-day';
 import { MomentService } from './moment.service';
-import { Actions } from '../interfaces/actions';
 
 @Injectable({
   providedIn: 'root'

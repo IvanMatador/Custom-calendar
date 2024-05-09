@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { AppImports } from './app.imports';
 import { MomentService } from './services/moment.service';
 
@@ -14,7 +13,7 @@ moment.locale('uk');
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, AppImports, CalendarComponent],
+  imports: [AppImports, CalendarComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -33,7 +32,10 @@ export class AppComponent implements OnInit {
   calendarType: FormControl = this.fb.control('');
   monthsList: FormControl = this.fb.control('');
 
-  constructor(private momentService: MomentService, private calendarService: CalendarService, private fb: FormBuilder) {
+  constructor(private momentService: MomentService,
+              private calendarService: CalendarService,
+              private fb: FormBuilder)
+  {
     const calendarType = this.calendarService.getCalendarType();
     this.calendarService.setCalendarType(calendarType);
     this.calendarType.setValue(calendarType);
@@ -47,21 +49,15 @@ export class AppComponent implements OnInit {
     this.showedMonth = this.momentService.getShowedMonth();
     this.momentService.setShowedMonth(this.showedMonth);
     this.months = moment.localeData('uk').months();
-    //console.log(moment.localeData('uk').months()/* .indexOf(this.showedMonth) */)
   }
 
   setCalendarType(type: any) {
     this.calendarService.setCalendarType(type);
   }
 
-  getDaysCount() {
-    this.momentService.getDaysCount();
-  }
-
   setShowedMonth(monthIndex: number) {
-    console.log(this.months[monthIndex])
     this.showedMonth = this.months[monthIndex];
     this.momentService.setShowedMonth(this.showedMonth);
-    this.calendarComponent.updateMonthDays();
+    this.calendarComponent.updateShowedDays();
   }
 }

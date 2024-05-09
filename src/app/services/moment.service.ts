@@ -30,10 +30,6 @@ export class MomentService {
     }, 1000);
   }
 
-  getDaysCount() {
-    console.log(moment().daysInMonth());
-  }
-
   getShowedMonth = () => localStorage.getItem('showedMonth') || moment().format('MMMM');
 
   setShowedMonth = (month: string) => localStorage.setItem('showedMonth', month);
@@ -52,8 +48,9 @@ export class MomentService {
 
     let days = [];
     let currentDay = moment(startOfWeek);
-    const eventsForDay = this.getEventsForDay(currentDay);
+
     while (currentDay <= endOfWeek) {
+      const eventsForDay = this.getEventsForDay(currentDay);
       days.push(this.parseDateToObject(currentDay, false, eventsForDay));
       currentDay.add(1, 'days');
     }
@@ -99,8 +96,9 @@ export class MomentService {
     });
 
     let currentDay = moment(startOfMonth);
-    const eventsForDay = this.getEventsForDay(currentDay);
+
     while (currentDay <= endOfMonth) {
+      const eventsForDay = this.getEventsForDay(currentDay);
       days.push(this.parseDateToObject(currentDay, false, eventsForDay));
       currentDay.add(1, 'days');
     }
@@ -110,8 +108,11 @@ export class MomentService {
     return days;
   }
 
-  getAllDaysEvents() {
+  saveAllEvents(events: ActionEvent[]) {
+    localStorage.setItem('events', JSON.stringify(events));
+  }
 
+  getAllDaysEvents() {
     if(localStorage.getItem('events')) {
       const allEvents = JSON.parse(localStorage.getItem('events')!);
       return allEvents;
@@ -120,22 +121,25 @@ export class MomentService {
     }
   }
 
-  getDaysEvents(day: WeekDay) {
-    const allActions: ActionEvent[] | null = this.getAllDaysEvents();
-    if(allActions) {
-
-    }
-  }
-
   getEventsForDay(date: moment.Moment): ActionEvent[] {
     const events = this.getAllDaysEvents();
     if(!events) return [];
+
     return events.filter((event: ActionEvent) =>
-        event.start <= date.valueOf() &&
-        event.end >= date.valueOf() &&
-        event.repetition !== 'once'
+        (this.getFormatByPattern(event.start, 'DD MM YYYY') === this.getFormatByPattern(date.valueOf(), 'DD MM YYYY') && event.repetition === 'once') ||
+        (event.repetition === 'week' && event.period === this.getFormatByPattern(date.valueOf(), 'dddd')) ||
+        (event.repetition === 'month' && event.period === this.getFormatByPattern(date.valueOf(), 'DD')) ||
+        (event.repetition === 'year' && event.period === this.getFormatByPattern(date.valueOf(), 'DD MM')) ||
+        event.repetition === 'day'
     );
-}
+  }
+
+  saveEvent(event: ActionEvent) {
+    let allEvents = this.getAllDaysEvents();
+    if(!allEvents) allEvents = [];
+    allEvents.push(event);
+    this.saveAllEvents(allEvents);
+  }
 
   updateShowedMonth(): WeekDay[] {
     const showedMonth = moment.months().indexOf(this.getShowedMonth());
@@ -143,8 +147,9 @@ export class MomentService {
     return this.getMonthDays(moment(firstDayOfShowedMonth).valueOf());
   }
 
-  getToday(): WeekDay {
-    const date = moment().format('dddd | DD MMMM | YYYY').split(' | ');
+  getToday(timestamp?: WeekDay): WeekDay {
+    const calculatedDate = timestamp ? moment(timestamp.datestamp) : moment();
+    const date = calculatedDate.format('dddd | DD MMMM | YYYY').split(' | ');
     return {
       dayOfWeek: date[0],
       numberAndMonth: date[1],
@@ -153,4 +158,25 @@ export class MomentService {
       isNotThisMonth: false
     };
   }
+
+  getHours() {
+    return Array.from({ length: 24 }, (_, i) => i);
+  }
+
+  getMinutes(): number[] {
+    return Array.from({ length: 12 }, (_, i) => i * 5);
+  }
+
+  getTimestampByTime(timestamp: string) {
+    return moment(timestamp, 'DD MMMM, YYYY, HH:mm').valueOf();
+  }
+
+  getTimeFromTimestamp(timestamp: number) {
+    return moment(timestamp).format('HH:mm');
+  }
+
+  getFormatByPattern(timestamp: number, pattern: string): string | number {
+    return moment(timestamp).format(pattern);
+  }
+
 }

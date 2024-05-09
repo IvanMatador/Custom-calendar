@@ -1,0 +1,26 @@
+:host {
+  .form-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  .name-field {
+    width: 100%;
+  }
+
+  .event-row {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .row-actions {
+    mat-icon {
+      margin-left: 15px;
+      cursor: pointer;
+    }
+  }
+}
+

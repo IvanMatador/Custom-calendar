@@ -1,0 +1,104 @@
+<h2 mat-dialog-title>{{ day.dayOfWeek }}, {{ day.numberAndMonth }} {{ day.year }} року {{ isToday ? '(Сьогодні)' : '' }}</h2>
+<mat-dialog-content>
+  <hr><br>
+  <mat-accordion>
+    <mat-expansion-panel #viewPanel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h3>Події цього дня</h3>
+        </mat-panel-title>
+        <mat-panel-description>
+          Розверни для перегляду створених подій (Наразі їх {{ day.events && day.events.length ? day.events.length : 0 }})
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      @for(event of day.events; track event) {
+        <div class="event-row">
+          <h4>{{ event.name }} з {{ getTimeFromTimestamp(event.start) }} до {{ getTimeFromTimestamp(event.end) }}</h4>
+          <div class="row-actions">
+            <mat-icon (click)="editEvent(event)" matTooltip="Редагувати подію">edit</mat-icon>
+            <mat-icon (click)="deleteEvent(event)" matTooltip="Видалити подію">delete</mat-icon>
+          </div>
+        </div>
+      } @empty {
+        <span>Немає подій.</span>
+      }
+    </mat-expansion-panel>
+
+    <mat-expansion-panel #editPanel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h3>Додати подію</h3>
+        </mat-panel-title>
+        <mat-panel-description>
+          Розверни для додавання події
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <div class="events-config">
+        <label>Як повторювати?</label>
+        <mat-radio-group [(ngModel)]="choosedRepetition">
+          @for (repetition of repetitions; track repetition) {
+            <mat-radio-button class="example-radio-button" [value]="repetition.value">{{repetition.name}}</mat-radio-button>
+          }
+        </mat-radio-group>
+        <hr>
+        <div>
+          <mat-slide-toggle [(ngModel)]="isHoliday">Чи святковий день?</mat-slide-toggle>
+        </div>
+        <br>
+        <div class="form-container" [formGroup]="eventForm">
+          <div class="form-row">
+            <mat-form-field class="name-field">
+              <mat-label>Назва події</mat-label>
+              <input matInput
+                    placeholder="День народження"
+                    formControlName="name">
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <mat-form-field>
+              <mat-label>Години початку</mat-label>
+              <mat-select formControlName="startHours" [value]="eventForm.get('startHours')?.value">
+                @for (hour of hours; track hour) {
+                  <mat-option [value]="hour">
+                    {{hour | number : '2.0'}}
+                  </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Хвилини початку</mat-label>
+              <mat-select formControlName="startMinutes">
+                @for (minute of minutes; track minute) {
+                  <mat-option [value]="minute">{{minute | number : '2.0'}}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <mat-form-field>
+              <mat-label>Години завершення</mat-label>
+              <mat-select formControlName="endHours">
+                @for (hour of hours; track hour) {
+                  <mat-option [value]="hour">{{hour | number : '2.0'}}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Хвилини завершення</mat-label>
+              <mat-select formControlName="endMinutes">
+                @for (minute of minutes; track minute) {
+                  <mat-option [value]="minute">{{minute | number : '2.0'}}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <button mat-raised-button color="primary" (click)="saveEvent()" [disabled]="eventForm.status === 'INVALID'">Зберегти подію</button>
+      </div>
+
+    </mat-expansion-panel>
+  </mat-accordion>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="primary" [mat-dialog-close]="day">Закрити</button>
+</mat-dialog-actions>

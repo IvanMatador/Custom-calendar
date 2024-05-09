@@ -1,16 +1,32 @@
 <mat-grid-list [cols]="cols" rowHeight="1:1.5">
   @for(day of showedDays; track day.datestamp) {
     <mat-grid-tile class="tile" [ngClass]="{ 'previous-month-day': day.isNotThisMonth }" (click)="openThisDay(day)">
-      <mat-card class="days-card" [ngClass]="{ 'today': checkIsToday(day) }">
+      <mat-card class="days-card" [ngClass]="{ 'today': checkIsToday(day) && !checkIsHoliday(day),
+                                                'holiday': checkIsHoliday(day) && !checkIsToday(day),
+                                                'holiday-plus-today': checkIsToday(day) && checkIsHoliday(day) }">
         <mat-card-header>
+          <div class="bage-container">
+            @if(checkIsToday(day)) {
+              <div class="bage">Сьогодні</div>
+            }
+            @if(checkIsHoliday(day)) {
+              <div class="bage">Свято</div>
+            }
+          </div>
           <mat-card-title-group>
             <mat-card-title><h3>{{ day.numberAndMonth }}</h3></mat-card-title>
             <mat-card-subtitle><h4>{{ day.dayOfWeek }}</h4></mat-card-subtitle>
           </mat-card-title-group>
         </mat-card-header>
         <mat-card-content>
-          @for(action of getDaysActions(day); track action) {
-            {{ action }}
+          @for(event of day.events; track event) {
+            <div class="event-row">
+              <h5>{{ event.name }} з {{ getTimeFromTimestamp(event.start) }} до {{ getTimeFromTimestamp(event.end) }}</h5>
+            </div>
+          } @empty {
+            @if(!day.isNotThisMonth) {
+              <span>---</span>
+            }
           }
         </mat-card-content>
       </mat-card>

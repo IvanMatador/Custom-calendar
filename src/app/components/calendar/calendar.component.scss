@@ -1,6 +1,6 @@
 :host {
-  mat-grid-tile {
-    background: lightblue;
+  mat-card-header {
+    position: relative;
   }
 
   .days-card {
@@ -16,7 +16,7 @@
 
   .today {
     margin: 0;
-    border: 5px solid red;
+    background-color: rgba(76, 0, 255, 0.336);
   }
 
   .tile:not(.previous-month-day) {
@@ -31,6 +31,34 @@
       margin: 5px;
       border: none;
     }
+  }
+
+  .holiday {
+    background-color: rgba(255, 0, 0, 0.199);
+  }
+
+  .holiday-plus-today {
+    background-color: rgba(72, 255, 0, 0.199);
+  }
+
+  .bage-container {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .bage {
+    height: 18px;
+    padding: 5px;
+    font-weight: 500;
+    color: white;
+    background-color: red;
+    border: 1px solid white;
+    border-radius: 4px;
+
   }
 }
 

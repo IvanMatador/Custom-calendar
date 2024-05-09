@@ -5,11 +5,6 @@
         <div class="current-date-container">
           @if((currentDate$ | async) && (currentTime$ | async)) {
             <span>Сьогодні {{ currentDate$ | async }} року, час: <b>{{ currentTime$ | async }}</b></span>
-            <!-- <span class="month-switcher">
-              @if(calendarType.value === 'month') {
-                {{ showedMonth }}
-              }
-            </span> -->
           } @else {
             <span>Зачекайте трошки...</span>
           }
@@ -43,6 +38,3 @@
     </div>
   </div>
 </main>
-
-
-<router-outlet />
